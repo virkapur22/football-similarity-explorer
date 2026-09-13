@@ -43,7 +43,7 @@ Import this repository at [vercel.com/new](https://vercel.com/new) and keep thes
 - Build Command: leave blank
 - Output Directory: leave blank
 
-Vercel reads the FastAPI entrypoint from `pyproject.toml` and deploys the API and existing frontend as one Python Function. The project pins Python 3.12 through `.python-version`.
+Vercel detects the root `app.py` entrypoint and deploys the API and existing frontend as one Python Function. The project pins Python 3.12 through `.python-version`.
 
 You can also deploy from the command line:
 
