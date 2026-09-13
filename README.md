@@ -34,6 +34,25 @@ Open [http://127.0.0.1:8000](http://127.0.0.1:8000).
 
 On Windows PowerShell, activate the environment with `.venv\Scripts\Activate.ps1`.
 
+## Deploy to Vercel
+
+Import this repository at [vercel.com/new](https://vercel.com/new) and keep these settings:
+
+- Application Preset: **FastAPI**
+- Root Directory: leave blank
+- Build Command: leave blank
+- Output Directory: leave blank
+
+Vercel reads the FastAPI entrypoint from `pyproject.toml` and deploys the API and existing frontend as one Python Function. The project pins Python 3.12 through `.python-version`.
+
+You can also deploy from the command line:
+
+```bash
+npm install --global vercel
+vercel
+vercel --prod
+```
+
 ## How it works
 
 ### 1. Data preparation
