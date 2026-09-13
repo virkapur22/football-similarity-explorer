@@ -2,6 +2,8 @@
 
 An interactive football analytics project by **Vir Kapur**. It represents players as statistical vectors, finds similar profiles with cosine similarity, compares players with human-defined tactical archetypes, and visualizes the shared space with PCA.
 
+**[Open the live application](https://football-similarity-explorer.vercel.app/)**
+
 ![Python](https://img.shields.io/badge/Python-3.10%2B-263630)
 ![FastAPI](https://img.shields.io/badge/API-FastAPI-4f7168)
 ![Tests](https://img.shields.io/badge/tests-14%20passing-c86d4c)
