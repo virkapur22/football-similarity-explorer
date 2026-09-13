@@ -1,0 +1,109 @@
+# Shared modelling configuration for Explore, Scout and player reports.
+# All inputs below exist in the supplied 2024/25 FBref file.  Counting inputs
+# use their generated *_p90 columns; percentages/rates are used directly.
+
+scaling:
+  method: robust
+  quantile_range: [10, 90]
+  clip: 4.0
+  group_by: position_group
+
+pca:
+  variance_target: 0.90
+  display_components: 3
+
+dimensions:
+  distribution:
+    passes_completed_p90: 0.22
+    passes_attempted_p90: 0.12
+    progressive_passes_p90: 0.24
+    passes_final_third_p90: 0.18
+    progressive_passing_distance_p90: 0.14
+    pass_completion_pct: 0.10
+  creativity:
+    xag_p90: 0.22
+    xa_p90: 0.18
+    key_passes_p90: 0.20
+    shot_creating_actions_p90: 0.20
+    passes_penalty_area_p90: 0.12
+    goal_creating_actions_p90: 0.08
+  progression:
+    progressive_passes_p90: 0.27
+    progressive_carries_p90: 0.27
+    passes_final_third_p90: 0.15
+    carries_final_third_p90: 0.16
+    carries_penalty_area_p90: 0.15
+  dribbling:
+    successful_takeons_p90: 0.34
+    takeon_success_pct: 0.18
+    progressive_carries_p90: 0.22
+    fouls_drawn_p90: 0.14
+    dispossessed_p90: -0.07
+    miscontrols_p90: -0.05
+  goal_threat:
+    npxg_p90: 0.29
+    shots_p90: 0.20
+    shots_on_target_p90: 0.19
+    attacking_penalty_area_touches_p90: 0.20
+    npxg_per_shot: 0.12
+  finishing:
+    goals_p90: 0.34
+    npxg_p90: 0.20
+    shots_on_target_p90: 0.18
+    shot_accuracy_pct: 0.14
+    npxg_per_shot: 0.14
+  defensive_activity:
+    tackles_won_p90: 0.25
+    interceptions_p90: 0.23
+    blocks_p90: 0.15
+    recoveries_p90: 0.17
+    clearances_p90: 0.12
+    defensive_penalty_area_touches_p90: 0.08
+  defensive_aggression:
+    tackles_p90: 0.35
+    tackles_won_p90: 0.20
+    attacking_third_touches_p90: 0.08
+    fouls_p90: 0.18
+    yellow_p90: 0.10
+    red_p90: 0.09
+  aerial:
+    aerials_won_p90: 0.64
+    aerial_win_pct: 0.36
+  movement:
+    progressive_receptions_p90: 0.26
+    passes_received_p90: 0.18
+    attacking_penalty_area_touches_p90: 0.24
+    carries_p90: 0.14
+    touches_p90: 0.18
+  ball_security:
+    pass_completion_pct: 0.32
+    takeon_success_pct: 0.16
+    miscontrols_p90: -0.20
+    dispossessed_p90: -0.18
+    errors_p90: -0.14
+  shot_stopping:
+    save_pct: 0.40
+    goals_prevented_p90: 0.35
+    clean_sheet_pct: 0.15
+    saves_p90: 0.10
+  gk_distribution:
+    gk_pass_completion_pct: 0.30
+    gk_passes_attempted_p90: 0.18
+    gk_throws_p90: 0.17
+    gk_launch_pct: -0.12
+    gk_average_pass_length: -0.08
+    pass_completion_pct: 0.15
+  gk_sweeping:
+    defensive_actions_outside_box_p90: 0.42
+    avg_defensive_action_distance: 0.32
+    crosses_stopped_pct: 0.26
+
+position_similarity_weights:
+  GK: {shot_stopping: 1.35, gk_distribution: 1.10, gk_sweeping: 1.15, ball_security: 0.55}
+  CB: {distribution: 1.10, progression: 0.75, defensive_activity: 1.35, defensive_aggression: 0.65, aerial: 1.10, ball_security: 0.85}
+  FB_WB: {distribution: 0.85, creativity: 0.65, progression: 1.25, dribbling: 0.80, defensive_activity: 1.05, movement: 0.80, ball_security: 0.70}
+  DM: {distribution: 1.15, creativity: 0.45, progression: 0.90, defensive_activity: 1.30, defensive_aggression: 0.85, aerial: 0.55, ball_security: 1.00}
+  CM: {distribution: 1.15, creativity: 0.90, progression: 1.10, dribbling: 0.50, defensive_activity: 0.75, movement: 0.65, ball_security: 0.90}
+  AM: {distribution: 0.70, creativity: 1.35, progression: 0.90, dribbling: 0.90, goal_threat: 0.75, movement: 0.85, ball_security: 0.55}
+  W: {creativity: 1.00, progression: 0.90, dribbling: 1.35, goal_threat: 1.05, finishing: 0.65, movement: 1.00, defensive_activity: 0.30}
+  ST: {creativity: 0.45, dribbling: 0.55, goal_threat: 1.40, finishing: 1.15, movement: 1.10, aerial: 0.80, defensive_activity: 0.30}

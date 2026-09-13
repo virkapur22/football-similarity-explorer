@@ -1,0 +1,91 @@
+# config_fbref_kaggle.yaml — for players_data_light-2024_2025.csv
+# (real FBref scrape: attacking, passing, defense, possession, AND
+# goalkeeper stats — the most complete source of the three so far)
+
+min_minutes: 900
+
+# Pos field only gives broad DF/MF/FW/GK (combos like "DF,MF" are reduced
+# to the first token before the comma in the loader). Same coarseness
+# limitation: this column alone does not distinguish centre-backs from full-backs.
+position_group_map:
+  GK: GK
+  DF: DF
+  MF: MF
+  FW: FW
+
+# raw FBref column -> canonical name used everywhere downstream
+column_map:
+  Gls: goals
+  Ast: assists
+  Sh: shots
+  SoT: shots_on_target
+  xG: xg
+  npxG: npxg
+  xAG: xag
+  xA: xa
+  KP: key_passes
+  Cmp: passes_completed
+  Att: passes_attempted
+  TotDist: passing_distance
+  PrgDist: progressive_passing_distance
+  PrgP: progressive_passes
+  1/3: passes_final_third
+  PPA: passes_penalty_area
+  CrsPA: crosses_penalty_area
+  TB: through_balls
+  Sw: switches
+  Crs: crosses
+  PrgC: progressive_carries
+  PrgR: progressive_receptions
+  Touches: touches
+  Carries: carries
+  Succ: successful_takeons
+  Att_stats_possession: takeons_attempted
+  1/3_stats_possession: carries_final_third
+  CPA: carries_penalty_area
+  Mis: miscontrols
+  Dis: dispossessed
+  Rec: passes_received
+  Tkl: tackles
+  TklW: tackles_won
+  Int: interceptions
+  Clr: clearances
+  Err: errors
+  CrdY: yellow
+  CrdR: red
+  Fls: fouls
+  Recov: recoveries
+  SCA: shot_creating_actions
+  GCA: goal_creating_actions
+  Def Pen: defensive_penalty_area_touches
+  Att 3rd_stats_possession: attacking_third_touches
+  Att Pen: attacking_penalty_area_touches
+  Fld_stats_misc: fouls_drawn
+  Won: aerials_won
+  Lost_stats_misc: aerials_lost
+  GA: goals_against
+  Saves: saves
+  PSxG: psxg
+  Att_stats_keeper_adv: gk_passes_attempted
+  Att (GK): gk_launched_passes
+  Thr: gk_throws
+  Blocks_stats_defense: blocks
+
+# these are already rates/percentages — used as-is, no per-90 conversion
+rate_columns:
+  Cmp%: pass_completion_pct
+  SoT%: shot_accuracy_pct
+  Tkl%: tackle_success_pct
+  Succ%: takeon_success_pct
+  Save%: save_pct
+  CS%: clean_sheet_pct
+  Won%: aerial_win_pct
+  /90: goals_prevented_p90
+  Cmp%_stats_keeper_adv: gk_pass_completion_pct
+  Stp%: crosses_stopped_pct
+  "#OPA/90": defensive_actions_outside_box_p90
+  AvgDist: avg_defensive_action_distance
+  npxG/Sh: npxg_per_shot
+  Dist: average_shot_distance
+  Launch%: gk_launch_pct
+  AvgLen: gk_average_pass_length

@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f3eddf" />
+    <title>Football Similarity Explorer</title>
+    <style>html, body { margin: 0; background-color: #f3eddf; color: #263630; }</style>
+    <link rel="stylesheet" href="./styles.css?v=20260913-1" />
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+    <script defer src="./app.js?v=20260913-1"></script>
+  </head>
+  <body>
+    <main class="page-shell">
+      <header class="page-header">
+        <div class="brand-lockup">
+          <span class="brand-mark" aria-hidden="true">FS</span>
+          <div>
+            <strong>Football Similarity Explorer</strong>
+            <span>Player vectors · archetypes</span>
+          </div>
+        </div>
+        <nav class="app-nav" aria-label="Primary navigation">
+          <button type="button" class="nav-button active" data-product-view="explore" aria-pressed="true">Explore</button>
+          <button type="button" class="nav-button" data-product-view="scout" aria-pressed="false">Scout</button>
+        </nav>
+        <div class="header-actions">
+          <span class="season-label">2024 / 25 dataset</span>
+          <div class="api-status" id="api-status"><span class="status-dot"></span> API ready</div>
+        </div>
+      </header>
+
+      <section class="product-view active" id="explore-view">
+      <section class="search-stage">
+        <div class="intro-copy">
+          <p class="eyebrow">Player intelligence, made visual</p>
+          <h1>Find the player<br /><em>behind the numbers.</em></h1>
+          <p class="subtitle">Explore statistical neighbours, compare playing profiles, and see what makes each player distinct.</p>
+        </div>
+
+        <form class="controls" id="search-form">
+          <div class="search-label">Start a new exploration</div>
+          <div class="control control-player">
+            <label for="player-input">Player name</label>
+            <input id="player-input" name="player" value="Erling Haaland" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="player-suggestions" />
+            <div class="player-suggestions" id="player-suggestions" role="listbox" aria-label="Player suggestions" hidden></div>
+          </div>
+          <div class="control-row">
+            <label class="control control-count">
+              <span>Closest players</span>
+              <input id="count-input" name="count" type="number" value="5" min="1" max="20" />
+            </label>
+            <label class="checkbox-control">
+              <input id="position-input" type="checkbox" checked />
+              <span>Match position group</span>
+            </label>
+          </div>
+          <button type="submit" id="search-button">Explore player <span aria-hidden="true">→</span></button>
+        </form>
+      </section>
+
+      <p class="message" id="message" role="status"></p>
+
+      <section class="overview" aria-label="Map summary">
+        <div class="target-summary">
+          <span class="summary-label">Currently exploring</span>
+          <strong id="target-name">Erling Haaland</strong>
+          <span id="target-meta">Run a search to load the map</span>
+        </div>
+        <div class="overview-stats" id="overview-stats" aria-label="Selected player key stats"></div>
+      </section>
+
+      <section class="visual-grid">
+        <aside class="matches-panel">
+          <div class="panel-heading">
+            <div>
+              <span class="section-index">01</span>
+              <h2>Nearest profiles</h2>
+              <p>Select a player to compare</p>
+            </div>
+          </div>
+          <div id="matches" class="matches-list"></div>
+        </aside>
+
+        <div class="chart-panel">
+          <div class="panel-heading map-heading">
+            <div>
+              <span class="section-index">02</span>
+              <h2>Similarity landscape</h2>
+              <p>Click any point to rebuild the map around that player</p>
+              <div class="map-key" aria-label="Map legend">
+                <span><i class="key-dot key-target"></i>Selected</span>
+                <span><i class="key-dot key-match"></i>Closest matches</span>
+                <span><i class="key-dot key-pool"></i>Player pool</span>
+              </div>
+            </div>
+            <div class="view-toggle" role="group" aria-label="Map view">
+              <button type="button" class="view-button active" data-view="3d">3D</button>
+              <button type="button" class="view-button" data-view="2d">2D</button>
+            </div>
+          </div>
+          <div id="plot" aria-label="Interactive 3D player similarity map"></div>
+          <p class="map-note"><strong>How to read it:</strong> names and connecting lines identify the strongest statistical matches. Nearby muted points provide context; the three axes compress the full playing profile.</p>
+        </div>
+      </section>
+
+      <section class="profile-panel" id="profile-panel">
+          <div class="radar-wrap">
+            <div class="radar-heading">
+              <div>
+                <span class="section-index">03</span>
+                <span id="radar-title">Stat comparison</span>
+              </div>
+              <small>Hover for actual values</small>
+            </div>
+            <div id="radar" aria-label="Player profile comparison radar chart"></div>
+          </div>
+          <div class="profile-details">
+            <div class="profile-heading">
+              <div>
+                <span class="summary-label">Selected comparison</span>
+                <h2 id="profile-name">Choose a player</h2>
+                <p id="profile-meta">Click a player in the list to compare profiles.</p>
+              </div>
+              <span class="profile-position" id="profile-position">--</span>
+            </div>
+            <div class="stats-grid" id="stats-grid"></div>
+            <p class="stats-note" id="stats-note"></p>
+            <button type="button" class="open-dual-report" id="open-dual-report" hidden>Compare full reports <span aria-hidden="true">↗</span></button>
+          </div>
+      </section>
+      </section>
+
+      <section class="product-view scout-view" id="scout-view" hidden>
+        <header class="scout-intro">
+          <div>
+            <p class="eyebrow">Player archetype workspace</p>
+            <h1>Find players who<br /><em>match the profile.</em></h1>
+          </div>
+          <p>Search the dataset by statistical archetype, player context and position-relative output. Compare multidimensional profiles using cosine similarity.</p>
+        </header>
+
+        <div class="scout-workspace">
+          <aside class="scout-sidebar">
+            <form id="scout-form" class="scout-filter-form">
+              <div class="filter-heading">
+                <span class="section-index">01</span>
+                <h2>Search brief</h2>
+                <button type="button" class="text-button" id="scout-reset">Reset</button>
+              </div>
+
+              <label class="scout-field featured-field">
+                <span>Archetype</span>
+                <select id="scout-role"><option value="">Any statistical profile</option></select>
+                <small id="role-description">Choose an archetype to compare players with its statistical vector.</small>
+              </label>
+
+              <div class="filter-grid">
+                <label class="scout-field"><span>Player</span><input id="scout-name" type="search" placeholder="Any player" /></label>
+                <label class="scout-field"><span>Position</span><select id="scout-position"><option value="">All positions</option></select></label>
+                <label class="scout-field"><span>Club</span><select id="scout-club"><option value="">All clubs</option></select></label>
+                <label class="scout-field"><span>League</span><select id="scout-league"><option value="">All leagues</option></select></label>
+                <label class="scout-field"><span>Nationality</span><select id="scout-nationality"><option value="">All nationalities</option></select></label>
+                <label class="scout-field"><span>Minimum minutes</span><input id="scout-min-minutes" type="number" min="0" value="900" /></label>
+                <label class="scout-field"><span>Minimum age</span><input id="scout-min-age" type="number" min="15" max="50" placeholder="Any" /></label>
+                <label class="scout-field"><span>Maximum age</span><input id="scout-max-age" type="number" min="15" max="50" placeholder="Any" /></label>
+              </div>
+
+              <details class="advanced-filters" hidden aria-hidden="true">
+                <summary>Advanced percentile filters <span>Position-relative</span></summary>
+                <p>Set only the metrics that matter. Zero leaves a metric unrestricted.</p>
+                <div class="threshold-list" id="threshold-list"></div>
+              </details>
+
+              <button class="scout-submit" type="submit">Find players <span>→</span></button>
+            </form>
+
+          </aside>
+
+          <section class="scout-results-area" aria-live="polite">
+            <div class="results-heading">
+              <div><span class="section-index">02</span><h2>Archetype matches</h2><p id="scout-count">Loading player pool…</p></div>
+              <div class="sort-controls">
+                <label><span>Sort by</span><select id="scout-sort"><option value="archetype_similarity" id="fit-sort-option">Archetype similarity</option><option value="age">Age</option><option value="minutes">Minutes</option></select></label>
+                <button type="button" id="sort-direction" aria-label="Sort descending" data-order="desc">↓</button>
+              </div>
+            </div>
+            <div class="results-column-labels"><span>Player</span><span>Profile</span><span id="fit-column-label">Archetype similarity</span><span></span></div>
+            <div id="scout-results" class="scout-results"><div class="scout-state">Preparing the scouting workspace…</div></div>
+            <nav class="scout-pagination" id="scout-pagination" aria-label="Scout result pages" hidden>
+              <button type="button" id="scout-previous">← Previous</button>
+              <span id="scout-page-counter" aria-live="polite">Page 1 of 1</span>
+              <button type="button" id="scout-next">Next →</button>
+            </nav>
+          </section>
+        </div>
+      </section>
+
+      <aside class="shortlist-tray" id="shortlist-tray" hidden>
+        <div><span class="summary-label">Shortlist</span><strong id="shortlist-count">0 players</strong></div>
+        <div class="shortlist-chips" id="shortlist-chips"></div>
+        <button type="button" id="compare-shortlist" disabled>Compare shortlist</button>
+      </aside>
+
+      <dialog class="player-dialog" id="player-dialog">
+        <button type="button" class="dialog-close" data-close-dialog="player-dialog" aria-label="Close player report">×</button>
+        <div id="player-report"></div>
+      </dialog>
+
+      <dialog class="explore-compare-dialog" id="explore-compare-dialog">
+        <button type="button" class="dialog-close" data-close-dialog="explore-compare-dialog" aria-label="Close player comparison">×</button>
+        <div class="explore-compare-heading">
+          <span class="section-index">Full reports</span>
+          <h2>Player comparison</h2>
+          <p>Actual output, position-relative percentiles, strengths and lower-volume areas.</p>
+        </div>
+        <div id="comparison-reports" class="comparison-reports" aria-live="polite"></div>
+      </dialog>
+
+      <dialog class="compare-dialog" id="compare-dialog">
+        <button type="button" class="dialog-close" data-close-dialog="compare-dialog" aria-label="Close comparison">×</button>
+        <div class="compare-dialog-heading"><span class="section-index">Shortlist</span><h2>Side-by-side comparison</h2><p>Actual values with position-relative percentiles.</p></div>
+        <div id="shortlist-comparison" class="shortlist-comparison"></div>
+      </dialog>
+
+      <footer>
+        <span>Football Similarity Explorer · By Vir Kapur</span>
+        <span>FBref data · cosine similarity · PCA projection</span>
+      </footer>
+    </main>
+  </body>
+</html>
